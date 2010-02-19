@@ -22,9 +22,10 @@
 $.fn.optionTree = function(tree, options) {
 
 
+    tree = tree;
     
     options = $.extend({
-        choose: 'Choose...',
+        choose: 'Choose...',        
         preselect: {},
         default_value: false,
         select_class: '',
@@ -32,7 +33,7 @@ $.fn.optionTree = function(tree, options) {
         empty_value: ''
     }, options || {});
 
-    
+  
 
     var cleanName = function (name) {
         return name.replace(/_*$/, '');
@@ -47,73 +48,11 @@ $.fn.optionTree = function(tree, options) {
     };
 
 
-    var recursifDefaultValue = function(select,value,tree_in)
-    {
-        defaultValue(select,value,tree_in);
-        if($("option[value='"+selected+"']").get(0) == undefined)
-        recursifDefaultValue(select,value,tree_in);
-    };
-
-    var defaultValue = function(select,value,tree_in,selected)
-    {
-        //???
-        var __select = select;
-
-        //Debug Start
-        console.log("start : ",select,value,tree_in,selected);
-
-        $.each(tree_in, function(k, v) {
-            console.log("___Each :",v,value,k,value==v,value==k,selected);
-            if(typeof v == "object" && value != k)
-            {
-               console.log("recursif call");
-               defaultValue(__select,value,v,k);
-            }
-            else if(
-                        (selected != undefined &&  value == v)||
-                        (selected != undefined &&  value == k)
-                    )
-            {
-                //valuer à selectionner
-                console.log("not recursif_call but ...");
-                if($("option[value='"+selected+"']").get(0) == undefined)
-                {
-                    console.log("selected undefined :",__select,selected,tree_in);
-                    recursifDefaultValue(undefined,selected,tree_in);
-                    //return ;
-                }
-
-                 console.log("selected defined and exist",select,selected);
-                 $("option[value='"+selected+"']").get(0).selected = true;
-                __select.change();
-          
-                if($("option[value='"+value+"']") )
-                {
-                    var opt=false;
-                    if(typeof value ==  "string")
-                    {
-                         opt = value;
-                    }
-                    else
-                    {
-                       $.each(tree_in,function(mk,mv){
-                            
-                           if(mv == value)
-                           opt = mk;
-                       });
-                    }
-                    //var opt = tree[value];
-                    console.log("On y est presque ::",opt, typeof value );
-                    $("option[value='"+opt+"']").get(0).selected = true;
-                    }
-            }
-        })
-    }
 
     return this.each(function() {
 
         var name = $(this).attr('name') + "_";
-
+         
         // remove all dynamic options of lower levels
         removeNested(name);
 
@@ -169,8 +108,10 @@ $.fn.optionTree = function(tree, options) {
          {
                $select.change();
          }
-
-         setTimeout(function(){defaultValue($select,8,tree)},400);
+         this.tree= tree;
+         this.select = $select;
+         return $(this);
+     
 
     });
 

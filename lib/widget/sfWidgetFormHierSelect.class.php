@@ -57,7 +57,9 @@ class sfWidgetFormHierSelect extends  sfWidgetFormInput
    var options = {select_class : '%s', leaf_class: '%s', empty_value : '%s', choose : '%s' %s};
 
    jQuery(document).ready(function(){
-        jQuery('#%s').optionTree(%s, options);
+       
+        jQuery('#%s').optionTree(%s, options)
+        .optionTreeDefault(%s);
    });
 
 </script>
@@ -72,7 +74,9 @@ EOF
       $this->getOption('choose'),
       (isset($value) && !is_null($value))?',preselect : '.$this->getPreselect($value,$name).'':'',
       $this->generateId($name),
-      $this->generateId('js_'.$name)
+      $this->generateId('js_'.$name),
+      (is_null($value))?'false':$value
+
       );
   }
 
@@ -81,18 +85,7 @@ EOF
   {
       
       $choices = $this->getOption('choices');
-      $this->default = "";
-    //  var_dump($choices);die;
-      foreach($choices as $k=>$v)
-      {
-          if(isset($v[$value]))
-          {
-              return "{clean: 4 }";
-          }
-      }
-
-
-      return '{}';
+      return "{}";
 
   }
 
@@ -131,7 +124,7 @@ EOF
    */
   public function getJavascripts()
   {
-        return array('/sfFormHierSelectPlugin/js/jquery.optionTree.js');
+        return array('/sfFormHierSelectPlugin/js/jquery.optionTree.js','/sfFormHierSelectPlugin/js/jquery.optionTreeDefault.js');
   }
 
 }
